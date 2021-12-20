@@ -1,5 +1,5 @@
 
-# You can change version of nodejs or add another version here. Check dockerhub for other available version
+# You can change version of nodejs or add another version here. Check dockerhub for other available versions
 
 alias node14='docker run -it --rm -e HOME:$HOME -v $HOME:$HOME -v `pwd`:/usr/app/ -w /usr/app node:14-slim node'
 
