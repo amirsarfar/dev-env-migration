@@ -1,0 +1,42 @@
+version: "3.7"
+
+networks:
+  mynet:
+
+volumes:
+  mariadb_data:
+  phpmyadmin_data:
+
+services:
+  mariadb:
+    image: mariadb:10.3
+    ports:
+      - 3306:3306 # bind port just in case we need to access it from our machine
+    environment:
+      MYSQL_ROOT_PASSWORD: password # mysql's root user password
+    volumes:
+      - mariadb_data:/var/lib/mysql/
+      #- ./conf/my.cnf:/etc/mysql/conf.d/my-custom.cnf # if you want to do custom config of your mariadb
+    restart: always # makes sure that the container starts on daemon start and restarts on failures
+    networks:
+      - mynet # put containers on the same network in order to make them able to see each other
+  phpmyadmin:
+    image: phpmyadmin:5
+    environment:
+      PMA_HOST: mariadb # introduce myqsl/mariadb host to phpmyadmin
+    ports:
+      - 8080:80 # port to access phpmyadmin from our machine
+    volumes:
+      - phpmyadmin_data:/var/www/html/
+    restart: always
+    networks:
+      - mynet
+    depends_on:
+      - mariadb
+  redis:
+    image: redis:6.2-alpine
+    ports:
+      - 6379:6379
+    restart: always
+    networks:
+      - mynet
